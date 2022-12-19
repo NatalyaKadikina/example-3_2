@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.skypro.hogwarts32.entities.Student;
 import ru.skypro.hogwarts32.service.StudentService;
 
+import javax.validation.Valid;
+import java.util.Collection;
+
 @RestController
 @RequestMapping("/student")
 public class StudentController {
@@ -17,31 +20,28 @@ public class StudentController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Student> getStudentInfo(@PathVariable Long id) {
-        Student student = studentService.findStudent(id);
-        if (student == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(student);
+    public Student read(@PathVariable long id) {
+        return studentService.read(id);
     }
 
     @PostMapping
-    public Student createStudent(@RequestBody Student student) {
-        return studentService.addStudent(student);
+    public Student create(@RequestBody Student student) {
+        return studentService.create(student);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Student> editStudent(@RequestBody Student student, @PathVariable long id) {
-        Student foundStudent = studentService.editStudent(id, student);
-        if (foundStudent == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(foundStudent);
+    public Student update(@PathVariable long id,
+                          @RequestBody Student student) {
+        return studentService.update(id, student);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable long id) {
-        studentService.deleteStudent(id);
-        return ResponseEntity.ok().build();
+    public Student delete(@PathVariable long id) {
+        return studentService.delete(id);
+    }
+
+    @GetMapping
+    public Collection<Student> findByAge(@RequestParam int age) {
+        return studentService.findByAge(age);
     }
 }

@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.skypro.hogwarts32.entities.Faculty;
 import ru.skypro.hogwarts32.service.FacultyService;
 
+import java.util.Collection;
+
 @RestController
 @RequestMapping("/faculty")
 public class FacultyController {
@@ -16,31 +18,27 @@ public class FacultyController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Faculty> getFacultyInfo(@PathVariable Long id) {
-        Faculty faculty = facultyService.findFaculty(id);
-        if (faculty == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(faculty);
+    public Faculty read(@PathVariable long id) {
+        return facultyService.read(id);
     }
 
     @PostMapping
-    public Faculty createStudent(@RequestBody Faculty faculty) {
-        return facultyService.addFaculty(faculty);
+    public Faculty createSt(@RequestBody Faculty faculty) {
+        return facultyService.create(faculty);
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Faculty> editStudent(@RequestBody Faculty faculty, @PathVariable long id) {
-        Faculty foundFaculty = facultyService.editFaculty(id, faculty);
-        if (foundFaculty == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(foundFaculty);
+    public Faculty update(@PathVariable long id, @RequestBody Faculty faculty) {
+        return facultyService.update(id, faculty);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<Void> deleteFaculty(@PathVariable long id) {
-        facultyService.deleteFaculty(id);
-        return ResponseEntity.ok().build();
+    public Faculty delete(@PathVariable long id) {
+        return facultyService.delete(id);
+    }
+
+    @GetMapping
+    public Collection<Faculty> findByCollor(@RequestParam String color) {
+        return facultyService.findByColor(color);
     }
 }

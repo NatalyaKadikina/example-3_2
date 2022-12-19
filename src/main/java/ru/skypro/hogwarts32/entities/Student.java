@@ -1,15 +1,16 @@
 package ru.skypro.hogwarts32.entities;
 
+import javax.persistence.*;
 import java.util.Objects;
-
+@Entity
+@Table(name = "students")
 public class Student {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String name;
     private int age;
-
-    public Student() {
-    }
 
     public Student(long id, String name, int age) {
         this.id = id;

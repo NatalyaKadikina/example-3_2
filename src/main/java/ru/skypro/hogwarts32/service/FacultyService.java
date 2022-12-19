@@ -1,14 +1,47 @@
 package ru.skypro.hogwarts32.service;
 
+import org.springframework.stereotype.Service;
 import ru.skypro.hogwarts32.entities.Faculty;
+import ru.skypro.hogwarts32.exeption.FacultyNotFoundException;
+import ru.skypro.hogwarts32.repository.FacultyRepository;
 
-public interface FacultyService {
+import java.util.Collection;
+import java.util.HashMap;
 
-    Faculty addFaculty(Faculty faculty);
+@Service
+public class FacultyService{
 
-    Faculty findFaculty(long id);
+    private final FacultyRepository facultyRepository;
 
-    Faculty editFaculty(long id, Faculty faculty);
+    public FacultyService(FacultyRepository facultyRepository) {
+        this.facultyRepository = facultyRepository;
+    }
 
-    void deleteFaculty(long id);
+    public Faculty create(Faculty faculty) {
+        faculty.setId(0);
+        return facultyRepository.save(faculty);
+    }
+
+    public Faculty read(long id) {
+        return facultyRepository.findById(id).orElseThrow(() -> new FacultyNotFoundException(id));
+    }
+
+    public Faculty update(long id,
+                          Faculty faculty) {
+        Faculty oldFaculty = read(id);
+        oldFaculty.setName(faculty.getName());
+        oldFaculty.setColor(faculty.getColor());
+        return facultyRepository.save(oldFaculty);
+    }
+
+    public Faculty delete(long id) {
+        Faculty faculty = read(id);
+        facultyRepository.delete(faculty);
+        return faculty;
+    }
+
+    public Collection<Faculty> findByColor(String color) {
+        return facultyRepository.findAllByColor(color);
+    }
 }
+

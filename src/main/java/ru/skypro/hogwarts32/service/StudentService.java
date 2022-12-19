@@ -1,14 +1,47 @@
 package ru.skypro.hogwarts32.service;
 
+import org.springframework.stereotype.Service;
+import ru.skypro.hogwarts32.entities.Faculty;
 import ru.skypro.hogwarts32.entities.Student;
+import ru.skypro.hogwarts32.exeption.StudentNotFoundException;
+import ru.skypro.hogwarts32.repository.StudentRepository;
 
-public interface StudentService {
+import java.util.Collection;
+import java.util.HashMap;
 
-    Student addStudent(Student student);
+@Service
+public class StudentService {
 
-    Student findStudent(long id);
+    private final StudentRepository studentRepository;
 
-    Student editStudent(long id, Student student);
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
-    void deleteStudent(long id);
+    public Student create(Student student) {
+        student.setId(0);
+        return studentRepository.save(student);
+    }
+
+    public Student read(long id) {
+        return studentRepository.findById(id).orElseThrow(() -> new StudentNotFoundException(id));
+    }
+
+    public Student update(long id,
+                          Student student) {
+        Student oldStudent = read(id);
+        oldStudent.setName(student.getName());
+        oldStudent.setAge(student.getAge());
+        return studentRepository.save(oldStudent);
+    }
+
+    public Student delete(long id) {
+        Student student = read(id);
+        studentRepository.delete(student);
+        return student;
+    }
+
+    public Collection<Student> findByAge(int age) {
+        return studentRepository.findAllByAge(age);
+    }
 }
